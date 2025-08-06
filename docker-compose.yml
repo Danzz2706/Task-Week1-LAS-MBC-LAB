@@ -1,0 +1,37 @@
+# docker-compose.yml (Versi Final dengan Entrypoint)
+version: '3.8'
+
+services:
+  webapp:
+    build: .
+    image: docker-project_webapp
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_HOST=redis
+    secrets:
+      - redis_password
+    # Kembali ke depends_on versi sederhana
+    depends_on:
+      - redis
+
+  redis:
+    image: "redis:alpine"
+    command: sh -c "redis-server --requirepass \"$$(cat /run/secrets/redis_password)\""
+    volumes:
+      - redis_data:/data
+    secrets:
+      - redis_password
+    # Healthcheck tetap bagus untuk ada, tapi tidak wajib untuk solusi ini
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
+
+secrets:
+  redis_password:
+    file: ./redis_password.txt
