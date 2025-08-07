@@ -112,6 +112,71 @@ Metode ini mensimulasikan bagaimana aplikasi di-deploy sebagai sebuah *stack* ya
     ```
 
 ---
+## 🔍 Verifikasi dan Debugging
+
+Berikut adalah cara untuk memeriksa langsung isi dari *secret* dan data di dalam Redis saat kontainer sedang berjalan.
+
+### 1. Memeriksa Isi Docker Secret
+
+Untuk membuktikan bahwa *secret* berhasil di-mount, kita akan masuk ke dalam kontainer `webapp` dan melihat isi file-nya.
+
+1.  **Cari Nama Kontainer Web App**
+    ```bash
+    docker ps
+    ```
+    * Jika menggunakan **Compose**, cari nama seperti `docker-project_webapp_1`.
+    * Jika menggunakan **Swarm**, cari nama seperti `myapp_webapp.1...`.
+
+2.  **Masuk ke Dalam Shell Kontainer**
+    ```bash
+    # Ganti <NAMA_CONTAINER> dengan nama yang sesuai
+    docker exec -it <NAMA_CONTAINER> sh
+    ```
+
+3.  **Lihat Isi File Secret**
+    Di dalam shell kontainer, jalankan:
+    ```sh
+    cat /run/secrets/redis_password
+    ```
+    Perintah ini akan menampilkan kata sandi Anda, membuktikan *secret* telah terpasang.
+
+4.  **Keluar**
+    Ketik `exit` dan tekan Enter.
+
+### 2. Memeriksa Data Langsung di Redis
+
+Untuk melihat data pesan langsung dari database, kita akan masuk ke dalam kontainer `redis`.
+
+1.  **Cari Nama Kontainer Redis**
+    ```bash
+    docker ps
+    ```
+    * Jika menggunakan **Compose**, cari nama seperti `docker-project_redis_1`.
+    * Jika menggunakan **Swarm**, cari nama seperti `myapp_redis.1...`.
+
+2.  **Masuk ke Dalam Shell Kontainer**
+    ```bash
+    # Ganti <NAMA_CONTAINER> dengan nama yang sesuai
+    docker exec -it <NAMA_CONTAINER> sh
+    ```
+
+3.  **Hubungkan ke Klien Redis**
+    Di dalam shell kontainer, jalankan perintah berikut untuk terhubung ke database dengan password dari *secret*.
+    ```sh
+    redis-cli -a $(cat /run/secrets/redis_password)
+    ```
+
+4.  **Tampilkan Semua Pesan**
+    Setelah prompt berubah menjadi `127.0.0.1:6379>`, jalankan perintah Redis ini:
+    ```redis
+    LRANGE log_pesan 0 -1
+    ```
+    Ini akan menampilkan semua pesan yang tersimpan di dalam list `log_pesan`.
+
+5.  **Keluar**
+    Ketik `exit` untuk keluar dari klien Redis, lalu ketik `exit` lagi untuk keluar dari shell kontainer.
+
+---
 
 ## 🧠 Analisis dan Konsep Kunci
 
