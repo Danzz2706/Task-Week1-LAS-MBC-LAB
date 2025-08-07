@@ -17,7 +17,8 @@ Proyek ini merupakan implementasi dari aplikasi web sederhana yang dibangun untu
 
 Arsitektur sistem ini dirancang agar setiap komponen berjalan dalam kontainer yang terisolasi namun dapat berkomunikasi melalui jaringan internal Docker.
 
-![Arsitektur Aplikasi](image_50b026.png)
+![Arsitektur Aplikasi](<img width="940" height="1127" alt="image" src="https://github.com/user-attachments/assets/9afff9e9-0505-4a79-abb1-d39d3cba20f4" />
+
 *(Diagram ini diambil dari spesifikasi tugas)*
 
 * **Web App (Flask)**: Bertanggung jawab atas logika bisnis dan penyajian antarmuka kepada pengguna.
